@@ -1,5 +1,7 @@
 @import-normalize;
 
+@import '~antd/dist/antd.css';
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
