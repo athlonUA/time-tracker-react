@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
 import { ErrorState, LoadingState, TimerAddState } from '../../ui';
@@ -35,9 +34,9 @@ export default function TimerAdd() {
   useEffect(() => {
     dispatch({ type: REQUEST_USER_LIST });
     try {
-      axios.get('https://jsonplaceholder.typicode.com/users').then(res => {
-        dispatch({ type: SUCCESS_USER_LIST, payload: res.data });
-      });
+      fetch('https://jsonplaceholder.typicode.com/users')
+        .then(response => response.json())
+        .then(json => dispatch({ type: SUCCESS_USER_LIST, payload: json }));
     } catch (err) {
       dispatch({
         type: ERROR_USER_LIST,
