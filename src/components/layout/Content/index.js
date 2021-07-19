@@ -2,14 +2,16 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { Layout } from 'antd';
 
 import { TimerAdd, TimerList, TimerView } from '../../pages';
-import './index.css';
+
+// eslint-disable-next-line
+import styles from './index.module.css';
 
 export default function Content() {
   const { Content: ContentLayout } = Layout;
 
   return (
     <>
-      <ContentLayout className="content">
+      <ContentLayout className={styles.content}>
         <Switch>
           <Route exact path="/" component={TimerAdd} />
           <Route exact path="/list" component={TimerList} />

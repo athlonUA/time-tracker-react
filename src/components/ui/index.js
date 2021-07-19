@@ -1,5 +1,15 @@
-import Header from './Header';
-import Footer from './Footer';
-import Content from './Content';
+import EmptyState from './EmptyState';
+import ErrorState from './ErrorState';
+import LoadingState from './LoadingState';
+import TimerAddState from './TimerAddState';
+import TimerListState from './TimerListState';
+import TimerViewState from './TimerViewState';
 
-export { Header, Footer, Content };
+export {
+  EmptyState,
+  ErrorState,
+  LoadingState,
+  TimerAddState,
+  TimerListState,
+  TimerViewState,
+};

@@ -1,4 +1,5 @@
 .content {
     background-color: #fff;
     min-height: calc(100vh - 134px);
+    position: relative;
 }
