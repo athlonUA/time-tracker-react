@@ -8,3 +8,7 @@
   left: 0;
   right: 0;
 }
+
+.wrapper .form {
+  width: 400px;
+}

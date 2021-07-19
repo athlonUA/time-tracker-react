@@ -1,15 +1,15 @@
 import EmptyState from './EmptyState';
 import ErrorState from './ErrorState';
 import LoadingState from './LoadingState';
-import TimerAddState from './TimerAddState';
-import TimerListState from './TimerListState';
-import TimerViewState from './TimerViewState';
+import TimerAddForm from './TimerAddForm';
+import TimerListTable from './TimerListTable';
+import TimerViewForm from './TimerViewForm';
 
 export {
   EmptyState,
   ErrorState,
   LoadingState,
-  TimerAddState,
-  TimerListState,
-  TimerViewState,
+  TimerAddForm,
+  TimerListTable,
+  TimerViewForm,
 };

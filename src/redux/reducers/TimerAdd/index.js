@@ -6,8 +6,8 @@ import {
 
 const initialState = {
   loading: false,
-  success: true,
-  data: [],
+  success: false,
+  data: null,
 };
 
 export default function timerAddReducer(state = initialState, action) {

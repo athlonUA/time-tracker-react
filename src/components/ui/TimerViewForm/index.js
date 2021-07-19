@@ -5,14 +5,14 @@ import moment from 'moment';
 // eslint-disable-next-line
 import styles from './index.module.css';
 
-export default function TimerViewState({
+export default function TimerViewForm({
   data: { timer },
-  actions: { goBack, deleteTimer },
+  methods: { closeTimer, deleteTimer },
 }) {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    if (timer.id) {
+    if (timer) {
       const { user, timeFrom, timeTo, duration, note } = timer;
       form.setFieldsValue({
         user: user,
@@ -23,31 +23,25 @@ export default function TimerViewState({
     }
   }, [form, timer]);
 
-  const { RangePicker } = DatePicker;
-
   return (
     <div className={styles.wrapper}>
-      <Form form={form} style={{ width: 400 }}>
+      <Form form={form} className={styles.form}>
         <Form.Item name="user" label="User" labelCol={{ span: 24 }}>
-          <Select style={{ width: 400 }} disabled={true} />
+          <Select style={{ width: '100%' }} disabled={true} />
         </Form.Item>
         <Form.Item name="time" label="Time range" labelCol={{ span: 24 }}>
-          <RangePicker
+          <DatePicker.RangePicker
             showTime
             format="YYYY-MM-DD HH:mm"
-            style={{ width: 400 }}
+            style={{ width: '100%' }}
             disabled={true}
           />
         </Form.Item>
         <Form.Item name="duration" label="Duration" labelCol={{ span: 24 }}>
-          <Input style={{ minWidth: 400, maxWidth: 400 }} disabled={true} />
+          <Input style={{ width: '100%' }} disabled={true} />
         </Form.Item>
         <Form.Item name="note" label="Note" labelCol={{ span: 24 }}>
-          <Input.TextArea
-            rows={7}
-            style={{ minWidth: 400, maxWidth: 400 }}
-            disabled={true}
-          />
+          <Input.TextArea rows={6} style={{ width: '100%' }} disabled={true} />
         </Form.Item>
         <Form.Item>
           <Button
@@ -55,7 +49,7 @@ export default function TimerViewState({
             style={{
               marginRight: '10px',
             }}
-            onClick={goBack}
+            onClick={closeTimer}
           >
             Go back
           </Button>

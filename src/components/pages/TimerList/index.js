@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import moment from 'moment';
 
-import { EmptyState, ErrorState, TimerListState, LoadingState } from '../../ui';
+import { EmptyState, ErrorState, TimerListTable, LoadingState } from '../../ui';
 import {
   REQUEST_TIMER_LIST,
   SUCCESS_TIMER_LIST,
@@ -14,8 +14,9 @@ import { timersGetFromStorage } from '../../../utils/storage/timer';
 import styles from './index.module.css';
 
 export default function TimerList() {
-  const dispatch = useDispatch();
+  const history = useHistory();
 
+  const dispatch = useDispatch();
   const {
     loading: loadingTimerList,
     success: successTimerList,
@@ -24,43 +25,19 @@ export default function TimerList() {
 
   useEffect(() => {
     dispatch({ type: REQUEST_TIMER_LIST });
-    try {
-      timersGetFromStorage().then(timers => {
+    timersGetFromStorage()
+      .then(timers => {
         dispatch({
           type: SUCCESS_TIMER_LIST,
-          payload: timers
-            .map(timer => {
-              const {
-                id: timerId,
-                user: { name: user },
-                time: [timeFrom, timeTo],
-                note,
-              } = timer;
-
-              return {
-                id: timerId,
-                user,
-                note,
-                timeFrom,
-                timeTo,
-                duration: moment
-                  .utc(
-                    moment
-                      .duration(moment(timeTo) - moment(timeFrom))
-                      .as('milliseconds'),
-                  )
-                  .format('H[h] m[m]'),
-              };
-            })
-            .reverse(),
+          payload: timers,
+        });
+      })
+      .catch(() => {
+        dispatch({
+          type: ERROR_TIMER_LIST,
+          payload: 'Something wrong happened.',
         });
       });
-    } catch (err) {
-      dispatch({
-        type: ERROR_TIMER_LIST,
-        payload: 'Something wrong happened.',
-      });
-    }
   }, [dispatch]);
 
   return (
@@ -71,7 +48,12 @@ export default function TimerList() {
         <EmptyState />
       )}
       {!loadingTimerList && successTimerList && dataTimerList.length > 0 && (
-        <TimerListState data={{ timers: dataTimerList }} />
+        <TimerListTable
+          data={{ timers: dataTimerList }}
+          methods={{
+            viewTimer: id => history.push(`/view/${id}`),
+          }}
+        />
       )}
     </>
   );

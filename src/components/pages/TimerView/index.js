@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import moment from 'moment';
 
-import { ErrorState, LoadingState, TimerViewState } from '../../ui';
+import { ErrorState, LoadingState, TimerViewForm } from '../../ui';
 import {
   REQUEST_TIMER_VIEW,
   SUCCESS_TIMER_VIEW,
@@ -19,11 +18,9 @@ import styles from './index.module.css';
 
 export default function TimerView() {
   const { id } = useParams();
-
   const history = useHistory();
 
   const dispatch = useDispatch();
-
   const {
     loading: loadingTimerView,
     success: successTimerView,
@@ -32,39 +29,19 @@ export default function TimerView() {
 
   useEffect(() => {
     dispatch({ type: REQUEST_TIMER_VIEW });
-    try {
-      timerGetFromStorage(id).then(timer => {
-        const {
-          id: timerId,
-          user: { name: user },
-          time: [timeFrom, timeTo],
-          note,
-        } = timer;
-
+    timerGetFromStorage(id)
+      .then(timer => {
         dispatch({
           type: SUCCESS_TIMER_VIEW,
-          payload: {
-            id: timerId,
-            user,
-            note,
-            timeFrom,
-            timeTo,
-            duration: moment
-              .utc(
-                moment
-                  .duration(moment(timeTo) - moment(timeFrom))
-                  .as('milliseconds'),
-              )
-              .format('H[h] m[m]'),
-          },
+          payload: timer,
+        });
+      })
+      .catch(() => {
+        dispatch({
+          type: ERROR_TIMER_VIEW,
+          payload: 'Something wrong happened.',
         });
       });
-    } catch (err) {
-      dispatch({
-        type: ERROR_TIMER_VIEW,
-        payload: 'Something wrong happened.',
-      });
-    }
   }, [dispatch, id]);
 
   return (
@@ -72,10 +49,10 @@ export default function TimerView() {
       {loadingTimerView && <LoadingState />}
       {!loadingTimerView && !successTimerView && <ErrorState />}
       {!loadingTimerView && successTimerView && (
-        <TimerViewState
+        <TimerViewForm
           data={{ timer: dataTimerView }}
-          actions={{
-            goBack: () => history.goBack(),
+          methods={{
+            closeTimer: () => history.goBack(),
             deleteTimer: id => timerRemoveFromStorage(id) && history.goBack(),
           }}
         />

@@ -1,21 +1,49 @@
+import { useEffect, useState } from 'react';
 import { Form, Input, Select, DatePicker, Button } from 'antd';
+import { v4 as uuidv4 } from 'uuid';
 
 // eslint-disable-next-line
 import styles from './index.module.css';
 
-export default function TimerAddState({
-  data: { users },
-  state: { loading },
-  actions: { submitForm },
+export default function TimerAddForm({
+  data: { loading },
+  methods: { submitForm },
 }) {
-  const [form] = Form.useForm();
+  const [users, setUsers] = useState([]);
 
-  const { Option } = Select;
-  const { RangePicker } = DatePicker;
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Sorry, something went wrong.');
+        }
+      })
+      .then(json => setUsers(json))
+      .catch(() => {});
+  }, []);
+
+  const preSubmitForm = form => {
+    const { userIdx, time, note } = form;
+    const [timeFrom, timeTo] = time;
+
+    const timer = {
+      id: uuidv4(),
+      user: users[userIdx],
+      time: [
+        timeFrom.format('YYYY-MM-DD HH:mm'),
+        timeTo.format('YYYY-MM-DD HH:mm'),
+      ],
+      note,
+    };
+
+    submitForm(timer);
+  };
 
   return (
     <div className={styles.wrapper}>
-      <Form form={form} style={{ width: 400 }} onFinish={submitForm}>
+      <Form className={styles.form} onFinish={preSubmitForm}>
         <Form.Item
           name="userIdx"
           label="User"
@@ -30,15 +58,15 @@ export default function TimerAddState({
           <Select
             showSearch
             placeholder="Type to search"
-            style={{ width: 400 }}
+            style={{ width: '100%' }}
             filterOption={(input, option) =>
               option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
           >
             {users.map((user, idx) => (
-              <Option key={idx} value={idx}>
+              <Select.Option key={idx} value={idx}>
                 {user.name}
-              </Option>
+              </Select.Option>
             ))}
           </Select>
         </Form.Item>
@@ -53,10 +81,10 @@ export default function TimerAddState({
             },
           ]}
         >
-          <RangePicker
+          <DatePicker.RangePicker
             showTime
             format="YYYY-MM-DD HH:mm"
-            style={{ width: 400 }}
+            style={{ width: '100%' }}
           />
         </Form.Item>
         <Form.Item
@@ -70,7 +98,7 @@ export default function TimerAddState({
             },
           ]}
         >
-          <Input.TextArea rows={7} style={{ minWidth: 400, maxWidth: 400 }} />
+          <Input.TextArea rows={6} style={{ width: '100%' }} />
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" loading={loading}>
